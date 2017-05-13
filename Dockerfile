@@ -5,16 +5,18 @@ ARG DUPLICITY_CSUM=29519f89f3e80d580c2b91a14be75cd9
 ARG DUPLICITY_BACKUP_VERSION=v1.3.0
 ARG DUPLICITY_BACKUP_CSUM=bc26f071a98048eebae3fea759ae709a
 
-ADD requirements.txt /tmp/requirements.txt
+ADD root /
 
 RUN apk -U --no-cache add \
   alpine-sdk \
   ca-certificates \
+  bash \
   gnupg \
   libffi \
   libffi-dev \
   librsync \
   librsync-dev \
+  mailx \
   openssl \
   openssl-dev \
   tar \
@@ -31,7 +33,7 @@ RUN apk -U --no-cache add \
   && mkdir -p /tmp/duplicity-backup \
   && tar -xvzf /tmp/duplicity-backup.tgz --strip-components=1 -C /tmp/duplicity-backup \
   && cp /tmp/duplicity-backup/duplicity-backup.sh /usr/local/bin/duplicity-backup.sh \
-  && chmod +x /usr/local/bin/duplicity-backup.sh \
+  && touch /etc/duplicity-backup.conf \
   && apk --no-cache del \
   alpine-sdk \
   libffi-dev \
@@ -39,6 +41,12 @@ RUN apk -U --no-cache add \
   openssl-dev \
   tar \
   wget \
-  && rm -rf /tmp/* /var/cache/apk/*
+  && rm -rf /tmp/* /var/cache/apk/* \
+  && chmod +x /usr/local/bin/duplicity-backup.sh /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/duplicity"]
+VOLUME ["/data"]
+
+ENV ROOT=/data \
+  STATIC_OPTIONS="--allow-source-mismatch"
+
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
