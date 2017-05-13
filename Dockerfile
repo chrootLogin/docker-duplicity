@@ -10,6 +10,7 @@ ADD root /
 RUN apk -U --no-cache add \
   alpine-sdk \
   ca-certificates \
+  coreutils \
   bash \
   gnupg \
   libffi \
@@ -41,12 +42,22 @@ RUN apk -U --no-cache add \
   openssl-dev \
   tar \
   wget \
-  && rm -rf /tmp/* /var/cache/apk/* \
-  && chmod +x /usr/local/bin/duplicity-backup.sh /usr/local/bin/docker-entrypoint.sh
+  && rm -rf \
+    /tmp/* \
+    /var/cache/apk/* \
+    /root/* \
+    /root/.cache \
+  && chmod +x \
+    /usr/local/bin/duplicity-backup.sh \
+    /usr/local/bin/docker-entrypoint.sh \
+  && mkdir -p /var/log/duplicity
 
 VOLUME ["/data"]
 
 ENV ROOT=/data \
-  STATIC_OPTIONS="--allow-source-mismatch"
+  STATIC_OPTIONS="--allow-source-mismatch" \
+  LOGDIR="/var/log/duplicity/" \
+  LOG_FILE="duplicity.log" \
+  LOG_FILE_OWNER="nobody:nogroup"
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
