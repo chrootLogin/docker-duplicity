@@ -14,3 +14,4 @@ EOF
 fi
 
 /usr/local/bin/duplicity-backup.sh -c /etc/duplicity-backup.conf $@
+exit $?
