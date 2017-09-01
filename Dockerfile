@@ -21,6 +21,7 @@ RUN apk -U --no-cache add \
   openssl \
   openssl-dev \
   tar \
+  tini \
   wget \
   && wget -O /tmp/duplicity.tgz ${DUPLICITY_URL} \
   && if [ "$DUPLICITY_CSUM" != "$(md5sum /tmp/duplicity.tgz | awk '{print($1)}')" ]; then echo "Wrong md5sum of downloaded file!"; exit 1; fi \
@@ -60,4 +61,4 @@ ENV ROOT=/data \
   LOG_FILE="duplicity.log" \
   LOG_FILE_OWNER="nobody:nogroup"
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/docker-entrypoint.sh"]
