@@ -13,5 +13,8 @@ signature_v2 = False
 EOF
 fi
 
+echo "Using following S3 conf:"
+cat /root/.s3cfg
+
 /usr/local/bin/duplicity-backup.sh -c /etc/duplicity-backup.conf $@
 exit $?
