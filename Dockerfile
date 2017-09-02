@@ -49,9 +49,7 @@ RUN apk -U --no-cache add \
     /var/cache/apk/* \
     /root/* \
     /root/.cache \
-  && chmod +x \
-    /usr/local/bin/duplicity-backup.sh \
-    /usr/local/bin/docker-entrypoint.sh \
+  && chmod +x /usr/local/bin/*.sh \
   && mkdir -p /var/log/duplicity
 
 VOLUME ["/data"]

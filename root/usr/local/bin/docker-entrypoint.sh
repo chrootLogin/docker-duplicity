@@ -16,5 +16,31 @@ fi
 echo "Using following S3 conf:"
 cat /root/.s3cfg
 
+if [ "${DB_BACKUP}" == "true" ]; then
+  if [ -z "${DB_TYPE}" ]; then
+    echo "You need to set DB_TYPE..."
+    exit 255
+  fi
+
+  if [ -z "${DB_USER}" ]; then
+    echo "You need to set DB_USER..."
+    exit 255
+  fi
+
+  if [ -z "${DB_PASSWORD}" ]; then
+    echo "You need to set DB_PASSWORD..."
+    exit 255
+  fi
+
+  echo "Creating database backup..."
+
+  if [ "${DB_TYPE}" == "MARIADB" ]; then
+    /usr/local/bin/mariadb-backup.sh
+  else
+    echo "Unsupported database: ${DB_TYPE}"
+    exit 1
+  fi
+fi
+
 /usr/local/bin/duplicity-backup.sh -c /etc/duplicity-backup.conf $@
 exit $?
