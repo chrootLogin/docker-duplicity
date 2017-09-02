@@ -18,6 +18,7 @@ RUN apk -U --no-cache add \
   librsync \
   librsync-dev \
   mailx \
+  mariadb-client \
   openssl \
   openssl-dev \
   tar \
